@@ -12,11 +12,31 @@ Copyright 2010.
 To run the app via Visual Studio:
 
 * Open the `ShipIt.sln` solution by going to `File` -> `Open` -> `Project/Solution`
-* Add a connections.config to both the ShipIt and ShipItTest projects, adding a connection string to each e.g.
 
+### With Jetbrains Rider
+
+To run the app in Rider:
+
+* Set up:
+* Open the `ShipIt.sln` solution by going to `File` -> `Open` -> `Open Solution or Project`
+* Ensure MSTest and MSBuild are installed. MSBuild web development package must be installed.
+* Set Rider to target your MSTest installation in File | Settings | Build, Execution, Deployment | Unit Testing | MSTest.
+* Set Rider to target your MSBuild installation in File | Settings | Build, Execution, Deployment | Toolset and Build.
+
+### Database:
+ 
+* Install PostgreSQL and set up a database server. 
+* Create 2 databases, one called ShipIt and the other called ShipItTest.
+* Download a database dump, and run 
+```
+psql -h localhost -p <dbServerPort> -U <username> -d ShipIt  -f <pathToDbDump>
+psql -h localhost -p <dbServerPort> -U <username> -d ShipItTest  -f <pathToDbDump>
+```
+    (PostgreSQL default server port is 5432 - this can be changed by setting the port value in `<InstallationDirectory>/<versionNumber>/data/postgresql.conf`)
+* Add a connections.config to both the ShipIt and ShipItTest projects, adding a connection string to each e.g.
 ```
 <connectionStrings>
-  <add name="MyPostgres" providerName="System.Data.SqlClient" connectionString="Server=127.0.0.1;Port=5432;Database=ShipItTest;User Id=postgres; Password=password;" />
+  <add name="MyPostgres" providerName="System.Data.SqlClient" connectionString="Server=127.0.0.1;Port=<dbPort>;Database=<dbName>;User Id=<username>; Password=<password>;" />
 </connectionStrings>
 ```
 
