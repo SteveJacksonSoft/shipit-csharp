@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Reflection;
 using System.Web.Http;
-using System.Web.UI.WebControls.WebParts;
+using log4net;
+using ShipIt.Algorithms;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
@@ -12,7 +13,7 @@ namespace ShipIt.Controllers
 {
     public class OutboundOrderController : ApiController
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IStockRepository stockRepository;
         private readonly IProductRepository productRepository;
@@ -23,7 +24,7 @@ namespace ShipIt.Controllers
             this.productRepository = productRepository;
         }
 
-        public void Post([FromBody]OutboundOrderRequestModel request)
+        public OutboundOrderResponse Post([FromBody]OutboundOrderRequestModel request)
         {
             log.Info(String.Format("Processing outbound order: {0}", request));
 
@@ -94,6 +95,8 @@ namespace ShipIt.Controllers
             }
 
             stockRepository.RemoveStock(request.WarehouseId, lineItems);
+
+            return new OutboundOrderResponse(TruckLoading.PackItemsIntoTrucks(request.OrderLines));
         }
     }
 }
