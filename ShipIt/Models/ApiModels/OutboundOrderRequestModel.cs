@@ -9,13 +9,13 @@ namespace ShipIt.Models.ApiModels
     public class OutboundOrderRequestModel
     {
         public int WarehouseId { get; set; }
-        public IEnumerable<Order> Orders { get; set; }
+        public IEnumerable<GtinOrder> GtinOrders { get; set; }
 
         public override String ToString()
         {
             return new StringBuilder()
                 .AppendFormat("warehouseId: {0}, ", WarehouseId)
-                .AppendFormat("orderLines: {0}", Orders)
+                .AppendFormat("orderLines: {0}", GtinOrders)
                 .ToString();
         }
     }

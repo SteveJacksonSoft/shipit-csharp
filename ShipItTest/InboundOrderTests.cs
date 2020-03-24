@@ -105,9 +105,9 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = GCP,
-                Orders = new List<Order>()
+                Orders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = GTIN,
                         quantity = quantity
@@ -131,9 +131,9 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = dodgyGcp,
-                Orders = new List<Order>()
+                Orders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = GTIN,
                         quantity = quantity
@@ -162,14 +162,14 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = GCP,
-                Orders = new List<Order>()
+                Orders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = GTIN,
                         quantity = quantity
                     },
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = unknownGtin,
                         quantity = quantity
@@ -197,14 +197,14 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = GCP,
-                Orders = new List<Order>()
+                Orders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = GTIN,
                         quantity = quantity
                     },
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = GTIN,
                         quantity = quantity

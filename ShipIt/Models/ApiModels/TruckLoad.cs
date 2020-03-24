@@ -7,6 +7,6 @@ namespace ShipIt.Models.ApiModels
     {
         public float WeightInGrams => Items.Select(item => item.Weight).Sum();
 
-        public List<Product> Items { get; set; } 
+        public readonly List<Product> Items = new List<Product>(); 
     }
 }

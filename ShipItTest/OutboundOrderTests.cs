@@ -59,9 +59,9 @@ namespace ShipItTest
             var outboundOrder = new OutboundOrderRequestModel()
             {
                 WarehouseId = WAREHOUSE_ID,
-                Orders = new List<Order>()
+                GtinOrders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 3
@@ -85,9 +85,9 @@ namespace ShipItTest
             var outboundOrder = new OutboundOrderRequestModel()
             {
                 WarehouseId = WAREHOUSE_ID,
-                Orders = new List<Order>()
+                GtinOrders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 3
@@ -114,9 +114,9 @@ namespace ShipItTest
             var outboundOrder = new OutboundOrderRequestModel()
             {
                 WarehouseId = WAREHOUSE_ID,
-                Orders = new List<Order>()
+                GtinOrders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 11
@@ -146,14 +146,14 @@ namespace ShipItTest
             var outboundOrder = new OutboundOrderRequestModel()
             {
                 WarehouseId = WAREHOUSE_ID,
-                Orders = new List<Order>()
+                GtinOrders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 8
                     },
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = noStockGtin,
                         quantity = 1000
@@ -182,14 +182,14 @@ namespace ShipItTest
             var outboundOrder = new OutboundOrderRequestModel()
             {
                 WarehouseId = WAREHOUSE_ID,
-                Orders = new List<Order>()
+                GtinOrders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 1
                     },
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = badGtin,
                         quantity = 1
@@ -216,14 +216,14 @@ namespace ShipItTest
             var outboundOrder = new OutboundOrderRequestModel()
             {
                 WarehouseId = WAREHOUSE_ID,
-                Orders = new List<Order>()
+                GtinOrders = new List<GtinOrder>()
                 {
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 1
                     },
-                    new Order()
+                    new GtinOrder()
                     {
                         gtin = Gtin1,
                         quantity = 1

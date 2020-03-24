@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ShipIt.Models.ApiModels
 {
-    public class Order
+    public class GtinOrder
     {
         public String gtin { get; set; }
         public int quantity { get; set; }

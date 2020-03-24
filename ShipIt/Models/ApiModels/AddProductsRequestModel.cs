@@ -11,7 +11,7 @@ namespace ShipIt.Models.ApiModels
     {
         public int WarehouseId { get; set; }
         public string Gcp { get; set; }
-        public IEnumerable<Order> Orders { get; set; }
+        public IEnumerable<GtinOrder> Orders { get; set; }
 
         public override String ToString()
         {
