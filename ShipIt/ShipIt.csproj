@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -115,6 +115,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\TruckLoading.cs" />
     <Compile Include="Controllers\InboundOrdersController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
@@ -129,8 +130,9 @@
     <Compile Include="Models\ApiModels\AddCompaniesRequest.cs" />
     <Compile Include="Models\ApiModels\AddEmployeesRequest.cs" />
     <Compile Include="Models\ApiModels\AddProductsRequestModel.cs" />
-    <Compile Include="Models\ApiModels\OrderLine.cs" />
+    <Compile Include="Models\ApiModels\GtinOrder.cs" />
     <Compile Include="Models\ApiModels\OutboundOrderRequestModel.cs" />
+    <Compile Include="Models\ApiModels\OutboundOrderResponse.cs" />
     <Compile Include="Models\ApiModels\ProductsRequestModel.cs" />
     <Compile Include="Filters\ShipItExceptionFilterAttribute.cs" />
     <Compile Include="Models\ApiModels\DataBaseRoles.cs" />
@@ -139,7 +141,7 @@
     <Compile Include="Models\ApiModels\EmployeeResponse.cs" />
     <Compile Include="Models\ApiModels\Company.cs" />
     <Compile Include="Models\ApiModels\EmployeeRole.cs" />
-    <Compile Include="Models\ApiModels\InboundOrderLine.cs" />
+    <Compile Include="Models\ApiModels\InboundOrder.cs" />
     <Compile Include="Models\ApiModels\OrderSegment.cs" />
     <Compile Include="Models\ApiModels\ProductResponse.cs" />
     <Compile Include="Exceptions\ClientVisibleException.cs" />
@@ -147,8 +149,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ApiModels\Product.cs" />
+    <Compile Include="Models\ProcessingModels\ProductOrder.cs" />
     <Compile Include="Models\ApiModels\RemoveEmployeeRequest.cs" />
     <Compile Include="Models\ApiModels\StockAlteration.cs" />
+    <Compile Include="Models\ApiModels\Truck.cs" />
     <Compile Include="Models\DataModels\CompanyDataModel.cs" />
     <Compile Include="Models\DataModels\EmployeeDataModel.cs" />
     <Compile Include="Models\DataModels\ProductDataModel.cs" />
@@ -171,7 +175,6 @@
     <Compile Include="Validators\ProductValidator.cs" />
     <Compile Include="Startup\WebApiConfig.cs" />
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
