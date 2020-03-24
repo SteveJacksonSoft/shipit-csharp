@@ -11,6 +11,7 @@ namespace ShipIt.Models.ApiModels
 {
     public class Employee
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public int WarehouseId { get; set; }
         public EmployeeRole role { get; set; }
@@ -18,6 +19,7 @@ namespace ShipIt.Models.ApiModels
 
         public Employee(EmployeeDataModel dataModel)
         {
+            Id = dataModel.Id; 
             Name = dataModel.Name;
             WarehouseId = dataModel.WarehouseId;
             role = MapDatabaseRoleToApiRole(dataModel.Role);

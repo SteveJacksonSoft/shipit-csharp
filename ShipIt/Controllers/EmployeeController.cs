@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Web.Http;
+using log4net;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
-using ShipIt.Models.DataModels;
-using ShipIt.Parsers;
 using ShipIt.Repositories;
-using ShipIt.Validators;
 
 namespace ShipIt.Controllers
 {
 
     public class EmployeeController : ApiController
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IEmployeeRepository employeeRepository;
 
@@ -24,6 +22,14 @@ namespace ShipIt.Controllers
             this.employeeRepository = employeeRepository;
         }
 
+        public EmployeeResponse GetAllWithName(string name)
+        {
+            var employees = employeeRepository.GetAllEmployeesWithName(name)
+                .Select(e => new Employee(e));
+            
+            return new EmployeeResponse(employees);
+        }
+        
         public EmployeeResponse Get(string name)
         {
             log.Info(String.Format("Looking up employee by name: {0}", name));

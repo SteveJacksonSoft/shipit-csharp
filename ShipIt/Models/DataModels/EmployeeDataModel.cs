@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using Npgsql;
 using ShipIt.Models.ApiModels;
 
 namespace ShipIt.Models.DataModels
 {
     public class EmployeeDataModel : DataModel
     {
+        [DatabaseColumnName("id")]
+        public long Id { get; set; }
         [DatabaseColumnName("name")]
         public string Name { get; set; }
         [DatabaseColumnName("w_id")]
@@ -26,6 +25,7 @@ namespace ShipIt.Models.DataModels
 
         public EmployeeDataModel(Employee employee)
         {
+            this.Id = employee.Id;
             this.Name = employee.Name;
             this.WarehouseId = employee.WarehouseId;
             this.Role = MapApiRoleToDatabaseRole(employee.role);
