@@ -8,7 +8,8 @@ namespace ShipIt.Algorithms
     {
         public static List<TruckLoad> PackItemsIntoTrucks(IEnumerable<OrderLine> items)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+            return new List<TruckLoad>();
         }
     }
 }
