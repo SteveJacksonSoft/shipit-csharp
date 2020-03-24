@@ -5,13 +5,13 @@ namespace ShipIt.Models.ApiModels
 {
     public class OutboundOrderResponse
     {
-        public OutboundOrderResponse(IEnumerable<TruckLoad> truckLoads)
+        public OutboundOrderResponse(IEnumerable<Truck> truckLoads)
         {
             TruckLoads = truckLoads.ToList();
         }
         
         public int NumberOfTrucks => TruckLoads.Count;
 
-        public List<TruckLoad> TruckLoads { get; set; }
+        public List<Truck> TruckLoads { get; set; }
     }
 }

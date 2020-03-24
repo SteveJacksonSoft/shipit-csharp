@@ -52,6 +52,30 @@ namespace ShipItTest
         }
 
         [TestMethod]
+        public void OutboundOrderReturnsListOfTrucks()
+        {
+            
+        }
+
+        [TestMethod]
+        public void LargeOrderPlacedOnSingleNewTruckIfDoesNotFitOnAnother()
+        {
+            
+        }
+
+        [TestMethod]
+        public void OrderOver2000KgIsSplitOver2Trucks()
+        {
+            
+        }
+
+        [TestMethod]
+        public void LargeOrderAndSmallOrderUnder4000KgIsSplitOver2Trucks()
+        {
+            
+        }
+
+        [TestMethod]
         public void OutboundOrderRemovesCorrectNumberOfStock()
         {
             onSetUp();

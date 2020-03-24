@@ -10,11 +10,11 @@ namespace ShipIt.Algorithms
     {
         private const float truckCapacity = 2_000_000;
 
-        public static List<TruckLoad> PackOrdersIntoTrucks(IEnumerable<ProductOrder> products)
+        public static List<Truck> PackOrdersIntoTrucks(IEnumerable<ProductOrder> products)
         {
-            var sortedOrders = SortInDecreasingWeightOrder(products);
+            var ordersByDecreasingWeight = SortInDecreasingWeightOrder(products);
 
-            return PackIntoTrucks(sortedOrders);
+            return PackIntoTrucks(ordersByDecreasingWeight);
         }
 
         private static IEnumerable<ProductOrder> SortInDecreasingWeightOrder(IEnumerable<ProductOrder> productOrders)
@@ -22,9 +22,9 @@ namespace ShipIt.Algorithms
             return productOrders.OrderBy(order => order.Quantity * order.Product.Weight).Reverse();
         }
 
-        private static List<TruckLoad> PackIntoTrucks(IEnumerable<ProductOrder> sortedOrders)
+        private static List<Truck> PackIntoTrucks(IEnumerable<ProductOrder> sortedOrders)
         {
-            var trucks = new List<TruckLoad> {new TruckLoad()};
+            var trucks = new List<Truck> {new Truck()};
 
             foreach (var item in sortedOrders)
             {
@@ -34,12 +34,12 @@ namespace ShipIt.Algorithms
             return trucks;
         }
 
-        private static List<TruckLoad> FitProductOrderInEmptiestOpenTruck(ProductOrder order, List<TruckLoad> trucks)
+        private static List<Truck> FitProductOrderInEmptiestOpenTruck(ProductOrder order, List<Truck> trucks)
         {
-            var trucksByAscendingWeight = trucks.OrderBy(truck => truck.WeightInGrams);
+            var trucksByAscendingWeight = trucks.OrderBy(truck => truck.ContentWeightInGrams);
 
             var emptiestTruck = trucksByAscendingWeight.First();
-            if (emptiestTruck.WeightInGrams + order.TotalWeight <= truckCapacity)
+            if (emptiestTruck.ContentWeightInGrams + order.TotalWeight <= truckCapacity)
             {
                 for (var i = 0; i < order.Quantity; i++)
                 {
@@ -59,11 +59,11 @@ namespace ShipIt.Algorithms
             );
         }
 
-        private static TruckLoad FillEmptyTruckWithProduct(Product product)
+        private static Truck FillEmptyTruckWithProduct(Product product)
         {
-            var truck = new TruckLoad();
+            var truck = new Truck();
 
-            while (truck.WeightInGrams + product.Weight < truckCapacity)
+            while (truck.ContentWeightInGrams + product.Weight < truckCapacity)
             {
                 truck.Items.Add(product);
             }
