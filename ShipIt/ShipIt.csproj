@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="connections.config" />
+    <Content Include="Data\Migrations\V1__Add_Id_column_to_em_table.sql" />
     <Content Include="log4net.config" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
