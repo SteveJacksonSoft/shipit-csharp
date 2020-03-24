@@ -5,13 +5,13 @@ using System.Web;
 
 namespace ShipIt.Models.ApiModels
 {
-    public class InboundOrderLine
+    public class InboundOrder
     {
         public string gtin { get; set; }
         public string name { get; set; }
         public int quantity { get; set; }
 
-        public InboundOrderLine()
+        public InboundOrder()
         {
         }
     }

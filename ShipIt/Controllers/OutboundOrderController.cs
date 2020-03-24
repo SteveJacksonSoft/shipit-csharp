@@ -30,27 +30,27 @@ namespace ShipIt.Controllers
             log.Info(String.Format("Processing outbound order: {0}", request));
 
             var products = productRepository
-                .GetProductsByGtin(ExtractGtins(request))
+                .GetProductsByGtin(ExtractGtinsOrThrowIfDuplicates(request))
                 .ToDictionary(p => p.Gtin, p => new Product(p));
 
-            var lineItems = ExtractStockAlterations(request, products);
+            var lineItems = ExtractStockAlterationsOrThrowIfUnknownGtin(request, products);
 
             var stock = stockRepository.GetStockByWarehouseAndProductIds
             (
                 request.WarehouseId,
-                GetProductIdsByGtins(request.OrderLines, products).ToList()
+                GetProductIdsByGtins(request.Orders, products).ToList()
             );
 
             EnsureSufficientStockHeld(request, lineItems, stock);
 
             stockRepository.RemoveStock(request.WarehouseId, lineItems);
 
-            return new OutboundOrderResponse(TruckLoading.PackItemsIntoTrucks(request.OrderLines));
+            return new OutboundOrderResponse(TruckLoading.PackItemsIntoTrucks(request.Orders));
         }
 
         private static void EnsureSufficientStockHeld(OutboundOrderRequestModel request, List<StockAlteration> lineItems, Dictionary<int, StockDataModel> stock)
         {
-            var orderLines = request.OrderLines.ToList();
+            var orderLines = request.Orders.ToList();
             var errors = new List<string>();
 
             for (int i = 0; i < lineItems.Count; i++)
@@ -79,13 +79,13 @@ namespace ShipIt.Controllers
             }
         }
 
-        private static List<StockAlteration> ExtractStockAlterations(OutboundOrderRequestModel request,
-            Dictionary<string, Product> products)
+        private static List<StockAlteration> ExtractStockAlterationsOrThrowIfUnknownGtin
+            (OutboundOrderRequestModel request, Dictionary<string, Product> products)
         {
             var lineItems = new List<StockAlteration>();
             var errors = new List<string>();
 
-            foreach (var orderLine in request.OrderLines)
+            foreach (var orderLine in request.Orders)
             {
                 if (!products.ContainsKey(orderLine.gtin))
                 {
@@ -106,7 +106,7 @@ namespace ShipIt.Controllers
             return lineItems;
         }
 
-        private static IEnumerable<int> GetProductIdsByGtins(IEnumerable<OrderLine> orderLines,
+        private static IEnumerable<int> GetProductIdsByGtins(IEnumerable<Order> orderLines,
             Dictionary<string, Product> products)
         {
             return products
@@ -114,16 +114,17 @@ namespace ShipIt.Controllers
                 .Select(pair => pair.Value.Id);
         }
 
-        private static List<string> ExtractGtins(OutboundOrderRequestModel request)
+        private static List<string> ExtractGtinsOrThrowIfDuplicates(OutboundOrderRequestModel request)
         {
             var gtins = new List<String>();
-            foreach (var orderLine in request.OrderLines)
+            foreach (var orderLine in request.Orders)
             {
                 if (gtins.Contains(orderLine.gtin))
                 {
                     throw new ValidationException(String.Format(
                         "Outbound order request contains duplicate product gtin: {0}",
-                        orderLine.gtin));
+                        orderLine.gtin
+                    ));
                 }
 
                 gtins.Add(orderLine.gtin);

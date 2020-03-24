@@ -40,7 +40,7 @@ namespace ShipIt.Controllers
 
             var allStock = stockRepository.GetStockByWarehouseId(warehouseId);
 
-            Dictionary<Company, List<InboundOrderLine>> orderlinesByCompany = new Dictionary<Company, List<InboundOrderLine>>();
+            Dictionary<Company, List<InboundOrder>> orderlinesByCompany = new Dictionary<Company, List<InboundOrder>>();
             foreach (var stock in allStock)
             {
                 Product product = new Product(productRepository.GetProductById(stock.ProductId));
@@ -52,11 +52,11 @@ namespace ShipIt.Controllers
 
                     if (!orderlinesByCompany.ContainsKey(company))
                     {
-                        orderlinesByCompany.Add(company, new List<InboundOrderLine>());
+                        orderlinesByCompany.Add(company, new List<InboundOrder>());
                     }
 
                     orderlinesByCompany[company].Add( 
-                        new InboundOrderLine()
+                        new InboundOrder()
                         {
                             gtin = product.Gtin,
                             name = product.Name,
@@ -89,7 +89,7 @@ namespace ShipIt.Controllers
 
             var gtins = new List<string>();
 
-            foreach (var orderLine in requestModel.OrderLines)
+            foreach (var orderLine in requestModel.Orders)
             {
                 if (gtins.Contains(orderLine.gtin))
                 {
@@ -106,7 +106,7 @@ namespace ShipIt.Controllers
             var lineItems = new List<StockAlteration>();
             var errors = new List<string>();
 
-            foreach (var orderLine in requestModel.OrderLines)
+            foreach (var orderLine in requestModel.Orders)
             {
                 if (!products.ContainsKey(orderLine.gtin))
                 {

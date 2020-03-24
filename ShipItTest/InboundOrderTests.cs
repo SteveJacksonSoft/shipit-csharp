@@ -105,9 +105,9 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = GCP,
-                OrderLines = new List<OrderLine>()
+                Orders = new List<Order>()
                 {
-                    new OrderLine()
+                    new Order()
                     {
                         gtin = GTIN,
                         quantity = quantity
@@ -131,9 +131,9 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = dodgyGcp,
-                OrderLines = new List<OrderLine>()
+                Orders = new List<Order>()
                 {
-                    new OrderLine()
+                    new Order()
                     {
                         gtin = GTIN,
                         quantity = quantity
@@ -162,14 +162,14 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = GCP,
-                OrderLines = new List<OrderLine>()
+                Orders = new List<Order>()
                 {
-                    new OrderLine()
+                    new Order()
                     {
                         gtin = GTIN,
                         quantity = quantity
                     },
-                    new OrderLine()
+                    new Order()
                     {
                         gtin = unknownGtin,
                         quantity = quantity
@@ -197,14 +197,14 @@ namespace ShipItTest
             {
                 WarehouseId = WAREHOUSE_ID,
                 Gcp = GCP,
-                OrderLines = new List<OrderLine>()
+                Orders = new List<Order>()
                 {
-                    new OrderLine()
+                    new Order()
                     {
                         gtin = GTIN,
                         quantity = quantity
                     },
-                    new OrderLine()
+                    new Order()
                     {
                         gtin = GTIN,
                         quantity = quantity
