@@ -8,6 +8,7 @@ using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
 using ShipIt.Repositories;
+using ShipIt.Services;
 using ShipItTest.Builders;
 
 namespace ShipItTest
@@ -15,11 +16,19 @@ namespace ShipItTest
     [TestClass]
     public class EmployeeControllerTests : AbstractBaseTest
     {
-        EmployeeController employeeController = new EmployeeController(new EmployeeRepository());
-        EmployeeRepository employeeRepository = new EmployeeRepository();
+        private EmployeeController employeeController;
+        private EmployeeRepository employeeRepository;
 
         private const string NAME = "Gissell Sadeem";
+        private const long ID = 1;
         private const int WAREHOUSE_ID = 1;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            employeeRepository = new EmployeeRepository();
+            employeeController = new EmployeeController(new EmployeeService(employeeRepository), employeeRepository);
+        }
 
         [TestMethod]
         public void TestRoundtripEmployeeRepository()
@@ -157,7 +166,7 @@ namespace ShipItTest
 
             // when
             employeeController.Post(addEmployeesRequest);
-            
+
             // then
             var employees = employeeRepository.GetAllEmployeesWithName(NAME).ToList();
             Assert.AreNotEqual(employees[0].Id, employees[1].Id);
@@ -177,10 +186,53 @@ namespace ShipItTest
 
             // when
             var employeesWithGivenName = employeeController.GetAllWithName(NAME).Employees;
-            
+
             // then
             Assert.AreEqual(2, employeesWithGivenName.Count());
+        }
 
+        [TestMethod]
+        public void DeletesEmployeeByIdIfIdGiven()
+        {
+            // given
+            onSetUp();
+            var employeeBuilder = new EmployeeBuilder().setName(NAME).SetId(1);
+            employeeRepository.AddEmployee(employeeBuilder.CreateEmployee());
+
+            // when
+            employeeController.Delete(new RemoveEmployeeRequest {Id = ID});
+
+            // then
+            try
+            {
+                employeeRepository.Get(ID);
+                Assert.Fail("NoSuchEntityException should have been thrown");
+            }
+            catch (NoSuchEntityException)
+            {
+            }
+        }
+
+        [TestMethod]
+        public void DeletesAllEmployeesWithNameIfIdNotGiven()
+        {
+            // given
+            onSetUp();
+            var employeeBuilder = new EmployeeBuilder().setName(NAME);
+            employeeRepository.AddEmployees(new List<Employee>() {employeeBuilder.CreateEmployee()});
+
+            // when
+            employeeController.Delete(new RemoveEmployeeRequest() {Name = NAME});
+
+            // then
+            try
+            {
+                var response = employeeRepository.GetAllEmployeesWithName(NAME).ToList();
+                Assert.Fail("NoSuchEntityException should have been thrown");
+            }
+            catch (NoSuchEntityException)
+            {
+            }
         }
 
         private bool EmployeesAreEqual(Employee A, Employee B)

@@ -7,6 +7,7 @@ using log4net;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
+using ShipIt.Services;
 
 namespace ShipIt.Controllers
 {
@@ -17,8 +18,11 @@ namespace ShipIt.Controllers
 
         private readonly IEmployeeRepository employeeRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        private EmployeeService _employeeService;
+
+        public EmployeeController(EmployeeService employeeService, IEmployeeRepository employeeRepository)
         {
+            _employeeService = employeeService;
             this.employeeRepository = employeeRepository;
         }
 
@@ -73,20 +77,20 @@ namespace ShipIt.Controllers
 
         public void Delete([FromBody]RemoveEmployeeRequest requestModel)
         {
-            string name = requestModel.Name;
+            var name = requestModel.Name;
             if (name == null)
             {
-                throw new MalformedRequestException("Unable to parse name from request parameters");
+                var id = requestModel.Id;
+                if (id == 0)
+                {
+                    throw new MalformedRequestException("Unable to parse name from request parameters");
+                }
+
+                _employeeService.Delete(id);
+                return;
             }
 
-            try
-            {
-                employeeRepository.RemoveEmployee(name);
-            }
-            catch (NoSuchEntityException)
-            {
-                throw new NoSuchEntityException("No employee exists with name: " + name);
-            }
+            _employeeService.Delete(name);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace ShipIt.Repositories
         EmployeeDataModel GetOperationsManager(int warehouseId);
         void AddEmployees(IEnumerable<Employee> employees);
         void RemoveEmployee(string name);
+        void RemoveEmployee(long id);
     }
 
     public class EmployeeRepository : RepositoryBase, IEmployeeRepository
@@ -74,6 +75,14 @@ namespace ShipIt.Repositories
             };
         }
 
+        public EmployeeDataModel Get(long id)
+        {
+            string sql = "SELECT id, name, w_id, role, ext FROM em WHERE id = @id";
+            var parameter = new NpgsqlParameter("@id", id);
+            string noProductWithIdErrorMessage = string.Format("No employees found with id: {0}", id);
+            return base.RunSingleGetQuery(sql, reader => new EmployeeDataModel(reader), noProductWithIdErrorMessage, parameter);
+        }
+
         public IEnumerable<EmployeeDataModel> GetAllEmployeesWithName(string name)
         {
             string sql = "SELECT id, name, w_id, role, ext FROM em WHERE name = @name";
@@ -115,16 +124,24 @@ namespace ShipIt.Repositories
             return base.RunSingleGetQuery(sql, reader => new EmployeeDataModel(reader), noProductWithIdErrorMessage, parameters);
         }
 
+        public void AddEmployee(Employee employee)
+        {
+            var sql = employee.Id == null
+                ? "INSERT INTO em (name, w_id, role, ext) VALUES(@name, @w_id, @role, @ext)"
+                : "INSERT INTO em (id, name, w_id, role, ext) VALUES(@id, @name, @w_id, @role, @ext)";
+
+            var parameters = new EmployeeDataModel(employee).GetNpgsqlParameters().ToArray();
+
+            base.RunQuery(sql, parameters);
+        }
+
         public void AddEmployees(IEnumerable<Employee> employees)
         {
-            string sql = "INSERT INTO em (name, w_id, role, ext) VALUES(@name, @w_id, @role, @ext)";
+            const string sql = "INSERT INTO em (name, w_id, role, ext) VALUES(@name, @w_id, @role, @ext)";
             
-            var parametersList = new List<NpgsqlParameter[]>();
-            foreach (var employee in employees)
-            {
-                var employeeDataModel = new EmployeeDataModel(employee);
-                parametersList.Add(employeeDataModel.GetNpgsqlParameters().ToArray());
-            }
+            var parametersList = employees.Select(employee => new EmployeeDataModel(employee))
+                .Select(employeeDataModel => employeeDataModel.GetNpgsqlParameters().ToArray())
+                .ToList();
 
             base.RunTransaction(sql, parametersList);
         }
@@ -141,6 +158,17 @@ namespace ShipIt.Repositories
             else if (rowsDeleted > 1)
             {
                 throw new InvalidStateException("Unexpectedly deleted " + rowsDeleted + " rows, but expected a single update");
+            }
+        }
+
+        public void RemoveEmployee(long id)
+        {
+            string sql = "DELETE FROM em WHERE id = @id";
+            var parameter = new NpgsqlParameter("@id", id);
+            var rowsDeleted = RunSingleQueryAndReturnRecordsAffected(sql, parameter);
+            if (rowsDeleted == 0)
+            {
+                throw new NoSuchEntityException("Incorrect result size: expected 1, actual 0");
             }
         }
     }
