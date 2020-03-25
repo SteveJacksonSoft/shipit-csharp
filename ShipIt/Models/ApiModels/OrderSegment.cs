@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace ShipIt.Models.ApiModels
 {
@@ -9,7 +6,7 @@ namespace ShipIt.Models.ApiModels
     {
         public Employee OperationsManager { get; set; }
         public int WarehouseId { get; set; }
-        public IEnumerable<OrderSegment> OrderSegments { get; set; }
+        public List<OrderSegment> OrderSegments { get; set; }
     }
 
     public class OrderSegment

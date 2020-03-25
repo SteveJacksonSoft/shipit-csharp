@@ -79,7 +79,7 @@ namespace ShipIt.Controllers
             {
                 OperationsManager = operationsManager,
                 WarehouseId = warehouseId,
-                OrderSegments = orderSegments
+                OrderSegments = orderSegments.ToList()
             };
         }
 
