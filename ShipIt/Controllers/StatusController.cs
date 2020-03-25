@@ -8,7 +8,6 @@ namespace ShipIt.Controllers
 {
     public class Status
     {
-        public List<Employee> Employees { get; set; }
         public int WarehouseCount { get; set; }
         public int EmployeeCount { get; set; }
         public int ItemsTracked { get; set; }
@@ -38,9 +37,6 @@ namespace ShipIt.Controllers
         {
             return new Status
             {
-                Employees = employeeRepository.GetEmployeesByWarehouseId(1)
-                    .Select(em => new Employee(em))
-                    .ToList(),
                 EmployeeCount = employeeRepository.GetCount(),
                 ItemsTracked = stockRepository.GetTrackedItemsCount(),
                 CompanyCount = companyRepository.GetCount(),

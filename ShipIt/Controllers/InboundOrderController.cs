@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web.Http;
-using System.Web.Mvc;
+using log4net;
 using ShipIt.Exceptions;
 using ShipIt.Models.ApiModels;
 using ShipIt.Models.DataModels;
-using ShipIt.Parsers;
 using ShipIt.Repositories;
-using ShipIt.Validators;
 
 namespace ShipIt.Controllers
 {
     public class InboundOrderController : ApiController
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log =
+            LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IEmployeeRepository employeeRepository;
         private readonly ICompanyRepository companyRepository;
@@ -34,6 +34,22 @@ namespace ShipIt.Controllers
         {
             log.Info("orderIn for warehouseId: " + warehouseId);
 
+            var operationsManager = GetOperationsManager(warehouseId);
+
+            var orderlinesByCompany = WriteOrderlinesByCompany(warehouseId);
+
+            var response = new InboundOrderResponse
+            {
+                OperationsManager = operationsManager,
+                WarehouseId = warehouseId,
+                OrderSegments = ConvertOrderLinesToOrderSegments(orderlinesByCompany).ToList(),
+            };
+            
+            return response;
+        }
+
+        private Employee GetOperationsManager(int warehouseId)
+        {
             var operationsManager = new Employee(employeeRepository.GetOperationsManager(warehouseId));
 
             log.Debug(String.Format("Found operations manager: {0}", operationsManager));
