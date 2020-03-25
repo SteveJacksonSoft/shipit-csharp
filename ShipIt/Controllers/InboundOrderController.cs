@@ -21,7 +21,8 @@ namespace ShipIt.Controllers
         private readonly IProductRepository productRepository;
         private readonly IStockRepository stockRepository;
 
-        public InboundOrderController(IEmployeeRepository employeeRepository, ICompanyRepository companyRepository, IProductRepository productRepository, IStockRepository stockRepository)
+        public InboundOrderController(IEmployeeRepository employeeRepository, ICompanyRepository companyRepository,
+            IProductRepository productRepository, IStockRepository stockRepository)
         {
             this.employeeRepository = employeeRepository;
             this.stockRepository = stockRepository;
@@ -34,7 +35,7 @@ namespace ShipIt.Controllers
         {
             log.Info("orderIn for warehouseId: " + warehouseId);
 
-            var operationsManager = GetOperationsManager(warehouseId);
+            var operationsManager = FetchOperationsManager(warehouseId);
 
             var orderlinesByCompany = WriteOrderlinesByCompany(warehouseId);
 
@@ -44,23 +45,29 @@ namespace ShipIt.Controllers
                 WarehouseId = warehouseId,
                 OrderSegments = ConvertOrderLinesToOrderSegments(orderlinesByCompany).ToList(),
             };
-            
+
             return response;
         }
 
-        private Employee GetOperationsManager(int warehouseId)
+        private Employee FetchOperationsManager(int warehouseId)
         {
             var operationsManager = new Employee(employeeRepository.GetOperationsManager(warehouseId));
 
             log.Debug(String.Format("Found operations manager: {0}", operationsManager));
 
-            var allStock = stockRepository.GetStockByWarehouseId(warehouseId);
+            return operationsManager;
+        }
+
+        private Dictionary<Company, List<InboundOrder>> WriteOrderlinesByCompany(int warehouseId)
+        {
+            var allStock = FetchStockInWarehouse(warehouseId);
 
             Dictionary<Company, List<InboundOrder>> orderlinesByCompany = new Dictionary<Company, List<InboundOrder>>();
+
             foreach (var stock in allStock)
             {
                 Product product = new Product(productRepository.GetProductById(stock.ProductId));
-                if(stock.held < product.LowerThreshold && !product.Discontinued)
+                if (stock.held < product.LowerThreshold && !product.Discontinued)
                 {
                     Company company = new Company(companyRepository.GetCompany(product.Gcp));
 
@@ -71,7 +78,7 @@ namespace ShipIt.Controllers
                         orderlinesByCompany.Add(company, new List<InboundOrder>());
                     }
 
-                    orderlinesByCompany[company].Add( 
+                    orderlinesByCompany[company].Add(
                         new InboundOrder()
                         {
                             gtin = product.Gtin,
@@ -82,24 +89,28 @@ namespace ShipIt.Controllers
             }
 
             log.Debug(String.Format("Constructed order lines: {0}", orderlinesByCompany));
-
-            var orderSegments = orderlinesByCompany.Select(ol => new OrderSegment()
-            {
-                OrderLines = ol.Value,
-                Company = ol.Key
-            });
-
-            log.Info("Constructed inbound order");
-
-            return new InboundOrderResponse
-            {
-                OperationsManager = operationsManager,
-                WarehouseId = warehouseId,
-                OrderSegments = orderSegments.ToList()
-            };
+            return orderlinesByCompany;
         }
 
-        public void Post([FromBody]InboundManifestRequestModel requestModel)
+        private IEnumerable<StockDataModel> FetchStockInWarehouse(int warehouseId)
+        {
+            return stockRepository.GetStockByWarehouseId(warehouseId);
+        }
+
+        private static IEnumerable<OrderSegment> ConvertOrderLinesToOrderSegments(
+            Dictionary<Company, List<InboundOrder>> orderlinesByCompany)
+        {
+            var orderSegments = orderlinesByCompany.Select(
+                ol => new OrderSegment
+                {
+                    OrderLines = ol.Value,
+                    Company = ol.Key
+                }
+            );
+            return orderSegments;
+        }
+
+        public void Post([FromBody] InboundManifestRequestModel requestModel)
         {
             log.Info("Processing manifest: " + requestModel);
 
@@ -109,8 +120,10 @@ namespace ShipIt.Controllers
             {
                 if (gtins.Contains(orderLine.gtin))
                 {
-                    throw new ValidationException(String.Format("Manifest contains duplicate product gtin: {0}", orderLine.gtin));
+                    throw new ValidationException(String.Format("Manifest contains duplicate product gtin: {0}",
+                        orderLine.gtin));
                 }
+
                 gtins.Add(orderLine.gtin);
             }
 
@@ -145,7 +158,8 @@ namespace ShipIt.Controllers
             if (errors.Count() > 0)
             {
                 log.Debug(String.Format("Found errors with inbound manifest: {0}", errors));
-                throw new ValidationException(String.Format("Found inconsistencies in the inbound manifest: {0}", String.Join("; ", errors)));
+                throw new ValidationException(String.Format("Found inconsistencies in the inbound manifest: {0}",
+                    String.Join("; ", errors)));
             }
 
             log.Debug(String.Format("Increasing stock levels with manifest: {0}", requestModel));
