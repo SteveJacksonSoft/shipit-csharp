@@ -1,4 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
+using ShipIt.Models.ApiModels;
 using ShipIt.Repositories;
 
 namespace ShipIt.Controllers
@@ -20,7 +23,8 @@ namespace ShipIt.Controllers
         private IProductRepository productRepository;
         private IStockRepository stockRepository;
 
-        public StatusController(IEmployeeRepository employeeRepository, ICompanyRepository companyRepository, IProductRepository productRepository, IStockRepository stockRepository)
+        public StatusController(IEmployeeRepository employeeRepository, ICompanyRepository companyRepository,
+            IProductRepository productRepository, IStockRepository stockRepository)
         {
             this.employeeRepository = employeeRepository;
             this.stockRepository = stockRepository;
@@ -31,7 +35,7 @@ namespace ShipIt.Controllers
         // GET api/status
         public Status Get()
         {
-            return new Status()
+            return new Status
             {
                 EmployeeCount = employeeRepository.GetCount(),
                 ItemsTracked = stockRepository.GetTrackedItemsCount(),

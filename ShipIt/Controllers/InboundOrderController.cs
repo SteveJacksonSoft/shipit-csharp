@@ -75,7 +75,7 @@ namespace ShipIt.Controllers
 
             log.Info("Constructed inbound order");
 
-            return new InboundOrderResponse()
+            return new InboundOrderResponse
             {
                 OperationsManager = operationsManager,
                 WarehouseId = warehouseId,

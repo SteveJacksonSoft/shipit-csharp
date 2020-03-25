@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\TruckLoading.cs" />
-    <Compile Include="Controllers\InboundOrdersController.cs" />
+    <Compile Include="Controllers\InboundOrderController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\OutboundOrderController.cs" />
